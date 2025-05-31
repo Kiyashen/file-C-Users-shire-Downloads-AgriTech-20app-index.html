@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriTechConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <h2>Login to AgriTechConnect</h2>
+  <input type="text" id="username" placeholder="Username" value="kiyash">
+  <input type="password" id="password" placeholder="Password" value="MiloBlue123@Kiyash">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="mainContent" style="display:none; flex-direction:column; width:100%; max-width: 1000px;">
+  <header>AgriTechConnect</header>
+  <nav>
+    <a id="dashboardLink">Dashboard</a>
+    <a id="sensorsLink">Sensors</a>
+    <a id="reportsLink">Reports</a>
+    <a id="settingsLink">Settings</a>
+  </nav>
+
+  <div id="dashboard" class="section" style="display:block;">
+    <h2>Welcome, Kiyash 🌿</h2>
+    <p>Here’s your AgriTech summary:</p>
+    <div class="dashboard">
+      <div class="card">
+        <h3>Temperature</h3>
+        <p>22°C</p>
+      </div>
+      <div class="card">
+        <h3>Humidity</h3>
+        <p>68%</p>
+      </div>
+      <div class="card">
+        <h3>Pod Status</h3>
+        <p>Healthy</p>
+      </div>
+      <div class="card">
+        <h3>Plant Growth</h3>
+        <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="sensors" class="section">
+    <h2>Sensor Data 🌱</h2>
+    <p>Soil Moisture: 45%</p>
+    <p>Light Level: High</p>
+    <p>CO₂ Level: 400 ppm</p>
+  </div>
+
+  <div id="reports" class="section">
+    <h2>Reports 📊</h2>
+    <p>Weekly Average Temperature: 24°C</p>
+    <p>Weekly Average Humidity: 65%</p>
+    <canvas id="weeklyChart"></canvas>
+  </div>
+
+  <div id="settings" class="section">
+    <h2>Settings ⚙️</h2>
+    <label>Change Display Name:</label>
+    <input type="text" placeholder="Enter new name">
+    <button>Save</button>
+    <p>Set Alerts, Preferences, etc.</p>
+  </div>
+
+  <footer>© 2025 AgriTechConnect</footer>
+</div>
+
+<!-- AI Chatbot (Floating Chat Box) -->
+<div id="chatbot" style="position:fixed; bottom:20px; right:20px; width:300px; max-height:400px; background:#fff; border:2px solid #3aa655; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); display:none; flex-direction:column;">
+  <div style="background:#3aa655; color:white; padding:10px; font-weight:bold; border-top-left-radius:12px; border-top-right-radius:12px;">AgriChat 🤖</div>
+  <div id="chatLog" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;"></div>
+  <input type="text" id="chatInput" placeholder="Type a message..." style="border:none; border-top:1px solid #ccc; padding:10px; width:100%; outline:none;">
+</div>
+
+<button onclick="toggleChatbot()" style="position:fixed; bottom:20px; right:20px; padding:10px 15px; background:#3aa655; color:white; border:none; border-radius:50%; font-size:20px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2);">💬</button>
+
+<script src="script.js"></script>
+<script>
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  if (username === "kiyash" && password === "MiloBlue123@Kiyash") {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("mainContent").style.display = "flex";
+    showSection("dashboard");
+    renderGrowthChart();
+    renderWeeklyChart();
+    document.getElementById("chatbot").style.display = "flex"; // Show chatbot after login
+  } else {
+    alert("Invalid credentials. Please try again.");
+  }
+}
+
+document.getElementById("dashboardLink").addEventListener("click", function() {
+  showSection("dashboard");
+  renderGrowthChart();
+});
+
+document.getElementById("sensorsLink").addEventListener("click", function() {
+  showSection("sensors");
+});
+
+document.getElementById("reportsLink").addEventListener("click", function() {
+  showSection("reports");
+  renderWeeklyChart();
+});
+
+document.getElementById("settingsLink").addEventListener("click", function() {
+  showSection("settings");
+});
+
+function showSection(sectionId) {
+  const sections = document.querySelectorAll(".section");
+  sections.forEach(section => {
+    section.style.display = section.id === sectionId ? "block" : "none";
+  });
+}
+
+function renderGrowthChart() {
+  const ctx = document.getElementById('growthChart').getContext('2d');
+  if (window.growthChartInstance) window.growthChartInstance.destroy();
+  window.growthChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
+      datasets: [{
+        label: 'Plant Growth',
+        data: [0, 2, 5, 7, 10],
+        backgroundColor: 'rgba(58, 166, 85, 0.2)',
+        borderColor: '#3aa655',
+        borderWidth: 2,
+        tension: 0.3
+      }]
+    }
+  });
+}
+
+function renderWeeklyChart() {
+  const ctx = document.getElementById('weeklyChart').getContext('2d');
+  if (window.weeklyChartInstance) window.weeklyChartInstance.destroy();
+  window.weeklyChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Avg Temp °C',
+        data: [23, 24, 22, 25, 24, 23, 24],
+        backgroundColor: '#3aa655'
+      }]
+    }
+  });
+}
+
+function toggleChatbot() {
+  const chatbot = document.getElementById("chatbot");
+  chatbot.style.display = chatbot.style.display === "none" ? "flex" : "none";
+}
+
+document.getElementById("chatInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    const input = e.target.value.trim();
+    if (input !== "") {
+      const chatLog = document.getElementById("chatLog");
+      const userMsg = document.createElement("div");
+      userMsg.style.color = "#3aa655";
+      userMsg.textContent = "You: " + input;
+      chatLog.appendChild(userMsg);
+
+      // Basic chatbot response
+      const botMsg = document.createElement("div");
+      botMsg.textContent = "AgriChat: " + generateBotResponse(input);
+      chatLog.appendChild(botMsg);
+      chatLog.scrollTop = chatLog.scrollHeight;
+
+      e.target.value = "";
+    }
+  }
+});
+
+function generateBotResponse(input) {
+  input = input.toLowerCase();
+  if (input.includes("hello") || input.includes("hi")) {
+    return "Hello, Kiyash! 🌿 How can I assist you today?";
+  } else if (input.includes("how is my farm") || input.includes("summary")) {
+    return "Your farm is doing great! 🌾 Temperature: 22°C, Humidity: 68%, Pod Status: Healthy.";
+  } else if (input.includes("growth")) {
+    return "Your plants are growing well. 📈 Keep monitoring the growth chart!";
+  } else {
+    return "I'm here to help with AgriTech! 🌱 Ask me anything about your farm.";
+  }
+}
+</script>
+</body>
+</html>
